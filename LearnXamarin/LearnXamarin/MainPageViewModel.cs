@@ -34,7 +34,7 @@ namespace LearnXamarin
 
         public string TheNote
         {
-            get => TheNote;
+            get => theNote;
             set
             {
                 theNote = value;
