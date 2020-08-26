@@ -11,6 +11,7 @@ namespace LearnXamarin.ViewModels
     {
         public DetailPageViewModel()
         {
+            ExitCommand = new Command(async () => await Application.Current.MainPage.Navigation.PopAsync());
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -30,7 +31,7 @@ namespace LearnXamarin.ViewModels
             }
         }
 
-        public Command BackButtonCommand { get; }
+        public Command ExitCommand { get; }
 
     }
 }

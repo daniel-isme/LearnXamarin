@@ -13,6 +13,7 @@ namespace LearnXamarin.Views
             BindingContext = viewModel;
 
             Title = "Note Detail";
+
             BackgroundColor = Color.PowderBlue;
 
             var textLabel = new Label
@@ -31,7 +32,7 @@ namespace LearnXamarin.Views
                 TextColor = Color.White,
                 FontSize = 20
             };
-            exitButton.SetBinding(Button.CommandProperty, nameof(DetailPageViewModel.BackButtonCommand));
+            exitButton.SetBinding(Button.CommandProperty, nameof(DetailPageViewModel.ExitCommand));
 
             var stackLayout = new StackLayout
             {
