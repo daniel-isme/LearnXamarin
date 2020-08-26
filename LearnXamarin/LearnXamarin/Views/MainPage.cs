@@ -1,4 +1,6 @@
-﻿using System;
+﻿using LearnXamarin.Models;
+using LearnXamarin.ViewModels;
+using System;
 using System.Collections.Generic;
 using System.Text;
 using Xamarin.Forms;
@@ -9,12 +11,13 @@ namespace LearnXamarin
     {
         Image xamagonImage;
         Editor noteEditor;
-        Label textLabel;
         Button saveButton, deleteButton;
 
         public MainPage()
         {
             BackgroundColor = Color.PowderBlue;
+
+            BindingContext = new MainPageViewModel();
 
             xamagonImage = new Image
             {
@@ -27,6 +30,7 @@ namespace LearnXamarin
                 BackgroundColor = Color.White,
                 Margin = new Thickness(10)
             };
+            noteEditor.SetBinding(Editor.TextProperty, nameof(MainPageViewModel.NoteText));
 
             saveButton = new Button
             {
@@ -35,7 +39,7 @@ namespace LearnXamarin
                 BackgroundColor = Color.Green,
                 Margin = new Thickness(10)
             };
-            saveButton.Clicked += SaveButton_Clicked;
+            saveButton.SetBinding(Button.CommandProperty, nameof(MainPageViewModel.SaveNoteCommand));
 
             deleteButton = new Button
             {
@@ -44,13 +48,13 @@ namespace LearnXamarin
                 BackgroundColor = Color.Red,
                 Margin = new Thickness(10)
             };
-            deleteButton.Clicked += DeleteButton_Clicked;
+            deleteButton.SetBinding(Button.CommandProperty, nameof(MainPageViewModel.EraseNotesCommand));
 
-            textLabel = new Label
+            var collectionView = new CollectionView
             {
-                FontSize = 20,
-                Margin = new Thickness(10)
+                ItemTemplate = new NotesTemplate()
             };
+            collectionView.SetBinding(CollectionView.ItemsSourceProperty, nameof(MainPageViewModel.Notes));
 
             var grid = new Grid
             {
@@ -79,21 +83,35 @@ namespace LearnXamarin
             grid.Children.Add(saveButton, 0, 2);
             grid.Children.Add(deleteButton, 1, 2);
             
-            grid.Children.Add(textLabel, 0, 3);
-            Grid.SetColumnSpan(textLabel, 2);
+            grid.Children.Add(collectionView, 0, 3);
+            Grid.SetColumnSpan(collectionView, 2);
 
             Content = grid;
         }
-
-        private void DeleteButton_Clicked(object sender, EventArgs e)
+        class NotesTemplate : DataTemplate
         {
-            textLabel.Text = "";
-            noteEditor.Text = "";
-        }
+            public NotesTemplate() : base(LoadTemplate)
+            {
 
-        private void SaveButton_Clicked(object sender, EventArgs e)
-        {
-            textLabel.Text = noteEditor.Text;
+            }
+
+            static StackLayout LoadTemplate()
+            {
+                var textLabel = new Label();
+                textLabel.SetBinding(Label.TextProperty, nameof(NoteModel.Text));
+
+                var frame = new Frame
+                {
+                    VerticalOptions = LayoutOptions.Center,
+                    Content = textLabel
+                };
+
+                return new StackLayout
+                {
+                    Children = { frame },
+                    Padding = new Thickness(10, 10)
+                };
+            }
         }
     }
 }

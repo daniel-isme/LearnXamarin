@@ -1,75 +1,47 @@
-﻿//using LearnXamarin.ViewModels;
-//using System;
-//using System.Collections.Generic;
-//using System.Collections.ObjectModel;
-//using System.ComponentModel;
-//using System.Text;
-//using Xamarin.Forms;
+﻿using LearnXamarin.Models;
+using LearnXamarin.ViewModels;
+using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
+using System.Text;
+using Xamarin.Forms;
 
-//namespace LearnXamarin.ViewModels
-//{
-//    public class MainPageViewModel : INotifyPropertyChanged
-//    {
-//        public MainPageViewModel()
-//        {
-//            Notes = new ObservableCollection<string>();
+namespace LearnXamarin.ViewModels
+{
+    public class MainPageViewModel : INotifyPropertyChanged
+    {
+        public MainPageViewModel()
+        {
+            Notes = new ObservableCollection<NoteModel>();
 
-//            SelectedNoteChangedCommand = new Command(async () =>
-//            {
-//                var detailVM = new DetailPageViewModel(SelectedNote);
+            SaveNoteCommand = new Command(() =>
+            {
+                Notes.Add(new NoteModel { Text = NoteText });
+                NoteText = string.Empty;
+            });
 
-//                var detailPage = new DetailPage();
+            EraseNotesCommand = new Command(() => Notes.Clear());
+        }
 
-//                detailPage.BindingContext = detailVM;
+        public event PropertyChangedEventHandler PropertyChanged;
 
-//                await Application.Current.MainPage.Navigation.PushAsync(detailPage);
-//            });
+        string noteText;
+        public string NoteText
+        {
+            get => noteText;
+            set
+            {
+                noteText = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(NoteText)));
 
-//            EraseCommand = new Command(() =>
-//            {
-//                TheNote = string.Empty;
-//            });
-
-//            SaveCommand = new Command(() =>
-//            {
-//                Notes.Add(TheNote);
-
-//                TheNote = string.Empty;
-//            });
-//        }
-
-//        public ObservableCollection<string> Notes { get; set; }
-
-//        public event PropertyChangedEventHandler PropertyChanged;
-
-//        string theNote;
-
-//        public string TheNote
-//        {
-//            get { return theNote; }
-//            set
-//            {
-//                theNote = value;
-
-//                var args = new PropertyChangedEventArgs(nameof(TheNote));
-
-//                PropertyChanged?.Invoke(this, args);
-//            }
-//        }
-
-//        string selectedNote;
-
-//        public string SelectedNote
-//        {
-//            get { return selectedNote; }
-//            set { selectedNote = value; }
-//        }
+                SaveNoteCommand.ChangeCanExecute();
+            }
+        }
 
 
-//        public Command SaveCommand { get; }
-
-//        public Command EraseCommand { get; }
-
-//        public Command SelectedNoteChangedCommand { get; }
-//    }
-//}
+        public ObservableCollection<NoteModel> Notes { get; }
+        public Command SaveNoteCommand { get; }
+        public Command EraseNotesCommand { get; }
+    }
+}
