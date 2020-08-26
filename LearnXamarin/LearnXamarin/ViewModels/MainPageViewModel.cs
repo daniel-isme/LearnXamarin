@@ -1,5 +1,6 @@
 ﻿using LearnXamarin.Models;
 using LearnXamarin.ViewModels;
+using LearnXamarin.Views;
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
@@ -22,6 +23,21 @@ namespace LearnXamarin.ViewModels
             });
 
             EraseNotesCommand = new Command(() => Notes.Clear());
+
+            NoteSelectedCommand = new Command(async () =>
+            {
+                if (SelectedNote is null) 
+                    return;
+
+                var detailViewModel = new DetailPageViewModel
+                {
+                    NoteText = SelectedNote.Text
+                };
+
+                await Application.Current.MainPage.Navigation.PushAsync(new DetailPage(detailViewModel));
+
+                SelectedNote = null;
+            });
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -40,8 +56,22 @@ namespace LearnXamarin.ViewModels
         }
 
 
+        private NoteModel selectedNote;
+        public NoteModel SelectedNote
+        {
+            get => selectedNote;
+            set 
+            {
+                selectedNote = value;
+                PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(nameof(SelectedNote)));
+            }
+        }
+
+
+
         public ObservableCollection<NoteModel> Notes { get; }
         public Command SaveNoteCommand { get; }
         public Command EraseNotesCommand { get; }
+        public Command NoteSelectedCommand { get; }
     }
 }

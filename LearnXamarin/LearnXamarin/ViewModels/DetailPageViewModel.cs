@@ -9,9 +9,8 @@ namespace LearnXamarin.ViewModels
 {
     public class DetailPageViewModel : INotifyPropertyChanged
     {
-        public DetailPageViewModel(string note)
+        public DetailPageViewModel()
         {
-            NoteText = note;
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -31,7 +30,7 @@ namespace LearnXamarin.ViewModels
             }
         }
 
-        public Command DissmissPageCommand { get; }
+        public Command BackButtonCommand { get; }
 
     }
 }
